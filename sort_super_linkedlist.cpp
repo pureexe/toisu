@@ -55,7 +55,7 @@ void freeLList(LList list) {
         p = q;
     }
     free(list);
-}
+} 
 //-------------------------------------------------------
 int sizeOfLList(LList list) {
     return list->size;
