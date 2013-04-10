@@ -165,7 +165,7 @@ public:
     {
         return myhdc;
     }
-    COLORREF getdrawcolor()
+    COLORREF getcolor()
     {
         return drawcolor;
     }
