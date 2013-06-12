@@ -11,8 +11,6 @@ public:
         next=fw;
     };
     ~Node();
-protected:
-private:
 };
 
 class List
@@ -35,13 +33,11 @@ public:
         t.root=node;
     }
     ~List(){};
-protected:
-private:
 };
-    List ls;
+    
 int main()
 {
-
+    List ls;
     ls >> 4 >> 20 >> 5 >> 6 >> 3 >> 2;
     ls.print(ls.root);
     return 0;
