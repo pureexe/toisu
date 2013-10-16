@@ -1,8 +1,8 @@
 #include<iostream>#include<cmath>
 using namespace std;
 int main()
-{    int d;
+{    double d;
     cin >> d;
-    cout << sqrt(3)*d*d/4;
+    cout << sqrt(3.0)*d*d/4;
     return 0;
 }
