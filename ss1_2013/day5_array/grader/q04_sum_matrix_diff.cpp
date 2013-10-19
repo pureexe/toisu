@@ -1,17 +1,29 @@
-#include<stdio.h>
-#include<math.h>
-int tab[101][101]
-int main(){
-    int i,j,n,u1=0,u2=0;
-    scanf("%d",&n);
-    for(i=0;i<n;i++)
-    {
-        for(j=0;j<n;j++)
+#include<iostream>
+using namespace std;
+int abs(int n)
+{
+    if(n>=0)
+        return n;
+    else
+        return -n;
+}
+int main()
+{
+    int n;
+    cin>>n;
+    int A[n][n];
+    for(int i=0;i<n;i++)
+        for(int j=0;j<n;j++)
+            cin>>A[i][j];
+    int sum=0;
+    for(int i=0;i<n;i++)
+        for(int j=0;j<n;j++)
         {
-            scanf("%d",&tab[i][j]);
+            if(i!=j||abs(i-j)==n-1){
+                sum+=abs(A[i][j]-A[j][i]);
+                //cout<<i<<" "<<j<<endl;
+            }
         }
-    }
-    for(i=0;i<)
-        /** Unfinished Yet **/
+    cout<<sum/2;
     return 0;
 }

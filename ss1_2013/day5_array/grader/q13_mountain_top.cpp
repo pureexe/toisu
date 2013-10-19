@@ -13,8 +13,6 @@ struct box{
 };
 bool isHigh(int a,int b)
 {
-    if(a!=2&&b!=1)
-        return false;
     if(tab[a][b-1]>=tab[a][b])
         return false;
     if(tab[a][b+1]>=tab[a][b])
@@ -49,6 +47,7 @@ int main(){
         for(j=1;j<n-1;j++)
         {
             if(isHigh(i,j))
+            //if(tab[i][j]>tab[i-1][j-1]&&tab[i][j]>tab[i][j-1]&&tab[i][j]>tab[i+1][j-1]&&tab[i][j]>tab[i-1][j]&&tab[i][j]>tab[i+1][j]&&tab[i][j]>tab[i-1][j+1]&&tab[i][j]>tab[i][j+1]&&tab[i][j]>tab[i+1][j+1])
             {
                 vex.push_back(box(i,j,tab[i][j]));
             }
@@ -57,7 +56,8 @@ int main(){
     printf("%d\n",vex.size());
     for(i=0;i<vex.size();i++)
     {
-        printf("%d %d %d",vex[i].h,vex[i].i,vex[i].j);
+        printf("%d %d %d\
+            ",vex[i].h,vex[i].i,vex[i].j);
     }
 
     return 0;
