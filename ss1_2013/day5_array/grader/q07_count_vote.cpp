@@ -11,7 +11,7 @@ int main()
         cin >> u;
         tab[u]++;
    }
-   int* most=max_element(tab,tab+n);
+   int* most=max_element(tab,tab+n+1);
    int those=most-tab;
    cout << those <<"\n"<< *most;
     return 0;

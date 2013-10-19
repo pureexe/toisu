@@ -1,8 +1,8 @@
 #include<stdio.h>
-int u[2500001];
+int u[3000000];
 int main()
 {
-    int i,n,d;
+    int i,n,d,b=0;
     scanf("%d",&n);
     for(i=0;i<n;i++)
     {
@@ -14,7 +14,10 @@ int main()
         if(u[i]==d)
            {
              printf("%d ",i+1);
+                    b=1;
            }
     }
+    if(b==0)
+        printf("0");
     return 0;
 }
