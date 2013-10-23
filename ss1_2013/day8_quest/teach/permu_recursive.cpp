@@ -1,5 +1,5 @@
 #include<stdio.h>
-int n=6,K=3;
+int n=6,K=3,ct;
 int A[]={1,2,3,4,5,6},U[10];
 
 int run(int bf,int af){
