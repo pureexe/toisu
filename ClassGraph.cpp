@@ -1,5 +1,4 @@
 #include<iostream>
-#include<map>
 #include<vector>
 //#define TYPE int
 using namespace std;
@@ -7,11 +6,11 @@ template<class TYPE>
 class Graph
 {
     private:
-        class Node // ใช้เก็บปมเป็นซับคลาสของกราฟ
-        {
+        class Edge;
+        class Node { // ใช้เก็บปมเป็นซับคลาสของกราฟ
             private:
                 TYPE vertex;
-                map<TYPE,int> linkcnt;
+                vector<Edge*> edge;
             public:
                 Node(){};
                 Node(TYPE v){
@@ -21,43 +20,70 @@ class Graph
                 TYPE getKey(){
                     return vertex;
                 }
-                void link(Node* v){
-                    linkcnt[v->getKey()]++;
+                void addEdge(Edge* e){
+                    edge.push_back(e);
                 }
-                void link(TYPE v){
-                    linkcnt[v]++;
-                }
-                void unlink(TYPE v){
-                    if(linkcnt[v]>0){
-                        linkcnt[v]--;
-                    }
-                }
-                void unlink(Node* v){
-                    int vx = v->getKey();
-                    if(linkcnt[vx]>0){
-                        linkcnt[vx]--;
+                void removeEdge(Edge* e){
+                    vector<Edge*>::iterator i;
+                    for(i=edge.begin();i!=edge.end();i++)
+                    {
+                        if(e == i){
+                            edge.erase(i)
+                            break;
+                        }
                     }
                 }
             protected:
         };
-        map<TYPE,Node*> NodeBox;
+        class Edge{ // เก็บเส้นเชื่อมของกราฟ
+            private:
+                Node* first,*second;
+                double weight;
+            public:
+                Edge(Node* f,Node* s){
+                    weight = 0;
+                    first = f;
+                    second = s;
+                };
+                Edge(Node* f,Node* s,double w){
+                    weight = w;
+                    first = f;
+                    second = s;
+                };
+                ~Edge(){};
+            protected:
+
+        };
+
+        vector<Edge*> edgeBox;
+        vector<Node*> nodeBox;
     public:
         Graph(){};
         ~Graph(){};
         void addEdge(TYPE a,TYPE b){
+            return addEdge(a,b,0);
+        }
+        Node* findNode(TYPE v){
+            //for(vector<Node>)
+        }
+        void addEdge(TYPE a,TYPE b,double c){ // เพิ่มเส้นเชื่อม แต่ความเร็วกากมาก ต้องแต่งภายหลัง
             Node* node_a=NULL,*node_b=NULL;
-            node_a = NodeBox[a];
+            node_a = findNode(a);
             if(node_a ==NULL){
                 node_a=new Node(a);
-                NodeBox[a]=node_a;
+                nodeBox.push_back(node_a);
             }
-            node_b = NodeBox[b];
+            node_b = findNode(b);
             if(node_b ==NULL){
                 node_b =new Node(b);
-                NodeBox[b]=node_b;
+                nodeBox.push_back(node_b);
             }
             node_a -> link(b);
             node_b -> link(a);
+            Edge* e = new Edge(node_a,node_b,c);
+            edgeBox.push_back(e);
+            node_a->addEdge(e);
+            node_b->addEdge(e);
         }
         void removeEdge(){
         }
@@ -69,19 +95,13 @@ class Graph
         }
         bool isEalurianGraph(){ // เช็คว่าทุกโหนดเป็นจำนวนคู่
         }
-        /*
-        vector<int> getEalurianpath{ // เช็คว่าทุกโหนดเป็นจำนวนคู่
+        vector<TYPE> getEalurianpath(){ // เช็คว่าทุกโหนดเป็นจำนวนคู่
         }
-        */
-        /*
-        Shorttestpath
-        */
+        vector<TYPE> getShortestpath(){ // หสมสงเดิยมร่สั้นที่สุด
+        }
+
         vector<TYPE> getVectorNode(){ // ใช้แสดงช่ื่อโหนดทั้งหมด
-            vector<TYPE> return_vex;
-            for(map<TYPE,Node*>::iterator i=NodeBox.begin();i!=NodeBox.end();i++){
-                 return_vex.push_back(i->first);
-            }
-            return return_vex;
+            return nodeBox;
         }
     protected:
 
