@@ -126,11 +126,35 @@ public:
         }
         else{
             lst_size--;
-            Node* ptr=moveNode(root,loc-1);
-            ptr->getPrev()->setNext(ptr->getNext());
-            ptr->getNext()->setPrev(ptr->getPrev());
-            delete ptr;
+            if(loc ==1){
+                root = root-> getNext();
+                delete root->getPrev();
+                root->setPrev(NULL);
+            }
+            else if(loc == size()){
+                leaf = leaf->getPrev();
+                delete  leaf->getNext();
+                leaf->setNext(NULL);
+            }
+            else{
+                Node* ptr=moveNode(root,loc-1);
+                ptr->getPrev()->setNext(ptr->getNext());
+                ptr->getNext()->setPrev(ptr->getPrev());
+                delete ptr;
+            }
         }
+    }
+    void remove(TYPE key){
+        Node* ptr;
+        int i,l_size=size(),l=0;
+        int* b = toArray();
+        for(i=1;i<l_size;i++){
+            if(b[i]==key){
+                erase(i+l);
+                l++;
+            }
+        }
+
     }
     TYPE front(){
         return root->getKey();
@@ -177,6 +201,14 @@ public:
             push_back(arr[i]);
         }
     }
+    bool find(TYPE key){
+        Node* ptr;
+        for(ptr=root;ptr!=NULL;ptr=ptr->getNext()){
+            if(ptr->getKey()==key)
+                return true;
+        }
+        return false;
+    }
     ~LinkedList() {};
 protected:
 
@@ -196,5 +228,9 @@ int main() {
     l.insert(2,9);
     l.print();cout << "\n";
     l.sort();
+    l.print();cout << "\n";
+    //l.remove(5);
+    l.erase(1);
+    l.erase(1);
     l.print();cout << "\n";
 }
