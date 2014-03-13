@@ -44,18 +44,48 @@ private:
     };
     int lst_size;
     Node* root,*leaf;
-    Node* moveNode(Node* head,int n){
-        int i;
-        if(n<0){
-            n*=-1;
-            for(i=0;i<n;i++,head=head->getPrev());
-            return head;
-        }
-        else{
-            for(i=0;i<n;i++,head=head->getNext());
-            return head;
+
+    void print(Node* root) {
+        if(root == NULL) {
+            return;
+        } else {
+            cout << root->getKey() << " ";
+            print(root->getNext());
         }
     }
+    void insert(int cur,int loc,TYPE key,Node* root){
+        if(cur<loc)
+        {
+            return insert(cur+1,loc,key,root->getNext());
+        }
+        else if(cur==loc){
+            Node* u = new Node(key);
+            u->setPrev(root->getPrev());
+            u->setNext(root);
+            root->getPrev()->setNext(u);
+            root->setPrev(u);
+        }
+    }
+    void erase(int cur,int loc,Node* root){
+        if(cur<loc)
+        {
+            return erase(cur+1,loc,root->getNext());
+        }
+        else if(cur==loc){
+            root->getPrev()->setNext(root->getNext());
+            root->getNext()->setPrev(root->getPrev());
+            delete root;
+        }
+
+    }
+    TYPE* toArray(TYPE* arr,int cur,Node* root){
+        if(root==NULL){
+            return NULL;
+        }
+        arr[cur]=root->getKey();
+        return toArray(arr,cur+1,root->getNext());
+    }
+
 public:
     LinkedList() {
         root = NULL;
@@ -112,12 +142,7 @@ public:
         }
         else{
             lst_size++;
-            Node* head =moveNode(root,loc-1);
-            Node* u = new Node(key);
-            u->setPrev(head->getPrev());
-            u->setNext(head);
-            head->getPrev()->setNext(u);
-            head->setPrev(u);
+            insert(1,loc,key,root);
         }
     }
     void erase(int loc){
@@ -126,10 +151,7 @@ public:
         }
         else{
             lst_size--;
-            Node* head=moveNode(root,loc-1);
-            head->getPrev()->setNext(head->getNext());
-            head->getNext()->setPrev(head->getPrev());
-            delete head;
+            erase(1,loc,root);
         }
     }
     TYPE front(){
@@ -143,16 +165,11 @@ public:
     NotAvaliable on STL
     ***/
     void print() {
-        Node* head;
-        for(head=root;head->getNext()!=NULL;head=head->getNext())
-            cout << head->getKey() << " ";
+        print(root);
     }
     TYPE* toArray(){
         TYPE* arr = new TYPE[size()];
-        Node* head;
-        int i;
-        for(head = root,i=0;i<size();head=head->getNext(),i++)
-            arr[i]=head->getKey();
+        toArray(arr,0,root);
         return arr;
     }
     ~LinkedList() {};
@@ -169,9 +186,8 @@ int main() {
     l.push_back(8);
     l.push_front(6);
     l.push_front(7);
-    l.print(); cout << "\n";
-    l.erase(2);
-    l.print();cout << "\n";
-    l.insert(2,9);
-    l.print();cout << "\n";
+    int* b = l.toArray();
+    for(int i=0;i<l.size();i++){
+        cout << b[i] << " ";
+    }
 }
