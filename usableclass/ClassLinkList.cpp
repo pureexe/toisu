@@ -44,16 +44,16 @@ private:
     };
     int lst_size;
     Node* root,*leaf;
-    Node* moveNode(Node* head,int n){
+    Node* moveNode(Node* ptr,int n){
         int i;
         if(n<0){
             n*=-1;
-            for(i=0;i<n;i++,head=head->getPrev());
-            return head;
+            for(i=0;i<n;i++,ptr=ptr->getPrev());
+            return ptr;
         }
         else{
-            for(i=0;i<n;i++,head=head->getNext());
-            return head;
+            for(i=0;i<n;i++,ptr=ptr->getNext());
+            return ptr;
         }
     }
 public:
@@ -112,12 +112,12 @@ public:
         }
         else{
             lst_size++;
-            Node* head =moveNode(root,loc-1);
+            Node* ptr =moveNode(root,loc-1);
             Node* u = new Node(key);
-            u->setPrev(head->getPrev());
-            u->setNext(head);
-            head->getPrev()->setNext(u);
-            head->setPrev(u);
+            u->setPrev(ptr->getPrev());
+            u->setNext(ptr);
+            ptr->getPrev()->setNext(u);
+            ptr->setPrev(u);
         }
     }
     void erase(int loc){
@@ -126,10 +126,10 @@ public:
         }
         else{
             lst_size--;
-            Node* head=moveNode(root,loc-1);
-            head->getPrev()->setNext(head->getNext());
-            head->getNext()->setPrev(head->getPrev());
-            delete head;
+            Node* ptr=moveNode(root,loc-1);
+            ptr->getPrev()->setNext(ptr->getNext());
+            ptr->getNext()->setPrev(ptr->getPrev());
+            delete ptr;
         }
     }
     TYPE front(){
@@ -143,17 +143,39 @@ public:
     NotAvaliable on STL
     ***/
     void print() {
-        Node* head;
-        for(head=root;head->getNext()!=NULL;head=head->getNext())
-            cout << head->getKey() << " ";
+        Node* ptr;
+        for(ptr=root;ptr!=NULL;ptr=ptr->getNext())
+            cout << ptr->getKey() << " ";
     }
     TYPE* toArray(){
         TYPE* arr = new TYPE[size()];
-        Node* head;
+        Node* ptr;
         int i;
-        for(head = root,i=0;i<size();head=head->getNext(),i++)
-            arr[i]=head->getKey();
+        for(ptr = root,i=0;i<size();ptr=ptr->getNext(),i++)
+            arr[i]=ptr->getKey();
         return arr;
+    }
+    void sort(){
+        TYPE *arr=toArray();
+        TYPE tmp;
+
+        int i,size_l=size();
+        for(i=0;i<size_l;i++)
+        {
+            for(int j=0;j<size_l-i;j++)
+            {
+                if(arr[j]>arr[j+1])
+                {
+                    tmp=arr[j+1];
+                    arr[j+1]=arr[j];
+                    arr[j]=tmp;
+                }
+            }
+        }
+        clear();
+        for(i=0;i<size_l;i++){
+            push_back(arr[i]);
+        }
     }
     ~LinkedList() {};
 protected:
@@ -171,7 +193,8 @@ int main() {
     l.push_front(7);
     l.print(); cout << "\n";
     l.erase(2);
-    l.print();cout << "\n";
     l.insert(2,9);
+    l.print();cout << "\n";
+    l.sort();
     l.print();cout << "\n";
 }
