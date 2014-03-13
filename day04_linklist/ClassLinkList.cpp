@@ -44,48 +44,17 @@ private:
     };
     int lst_size;
     Node* root,*leaf;
-
-    void print(Node* root) {
-        if(root == NULL) {
-            return;
+    Node* moveNode(Node* ptr,int n) {
+        int i;
+        if(n<0) {
+            n*=-1;
+            for(i=0; i<n; i++,ptr=ptr->getPrev());
+            return ptr;
         } else {
-            cout << root->getKey() << " ";
-            print(root->getNext());
+            for(i=0; i<n; i++,ptr=ptr->getNext());
+            return ptr;
         }
     }
-    void insert(int cur,int loc,TYPE key,Node* root){
-        if(cur<loc)
-        {
-            return insert(cur+1,loc,key,root->getNext());
-        }
-        else if(cur==loc){
-            Node* u = new Node(key);
-            u->setPrev(root->getPrev());
-            u->setNext(root);
-            root->getPrev()->setNext(u);
-            root->setPrev(u);
-        }
-    }
-    void erase(int cur,int loc,Node* root){
-        if(cur<loc)
-        {
-            return erase(cur+1,loc,root->getNext());
-        }
-        else if(cur==loc){
-            root->getPrev()->setNext(root->getNext());
-            root->getNext()->setPrev(root->getPrev());
-            delete root;
-        }
-
-    }
-    TYPE* toArray(TYPE* arr,int cur,Node* root){
-        if(root==NULL){
-            return NULL;
-        }
-        arr[cur]=root->getKey();
-        return toArray(arr,cur+1,root->getNext());
-    }
-
 public:
     LinkedList() {
         root = NULL;
@@ -136,28 +105,72 @@ public:
         leaf = NULL;
         lst_size = 0;
     }
-    void insert(int loc,TYPE key){
-        if(loc>size()){
+    void insert(int loc,TYPE key) {
+        if(loc>size()) {
             cout << "LinkedList Overflow";
-        }
-        else{
+        } else {
             lst_size++;
-            insert(1,loc,key,root);
+            Node* ptr =moveNode(root,loc-1);
+            Node* u = new Node(key);
+            u->setPrev(ptr->getPrev());
+            u->setNext(ptr);
+            ptr->getPrev()->setNext(u);
+            ptr->setPrev(u);
         }
     }
-    void erase(int loc){
-        if(loc>size()){
+    void erase(int loc) {
+        if(loc>size()) {
             cout << "LinkedList Overflow";
-        }
-        else{
+        } else {
             lst_size--;
-            erase(1,loc,root);
+            if(loc ==1) {
+                root = root-> getNext();
+                delete root->getPrev();
+                root->setPrev(NULL);
+            } else if(loc == size()) {
+                leaf = leaf->getPrev();
+                delete  leaf->getNext();
+                leaf->setNext(NULL);
+            } else {
+                Node* ptr=moveNode(root,loc-1);
+                ptr->getPrev()->setNext(ptr->getNext());
+                ptr->getNext()->setPrev(ptr->getPrev());
+                delete ptr;
+            }
         }
     }
-    TYPE front(){
+    void remove(TYPE key) { /// stupid shit need improve speed
+        Node* ptr=root,*del;
+        for(ptr=root;ptr!=NULL;ptr=ptr->getNext()){
+            if(ptr->getKey()==key){
+                    del = ptr;
+
+                if(ptr==root){
+                    root=del->getNext();
+                    root->setPrev(NULL);
+                    delete del;
+                    ptr =root;
+                }
+                else if(ptr==leaf){
+                    leaf = del->getPrev();
+                    leaf ->setNext(NULL);
+                    delete del;
+                    ptr = leaf;
+                }else{
+                    del->getPrev()->setNext(del->getNext());
+                    del->getNext()->setPrev(del->getPrev());
+                    ptr = del->getPrev();
+                    delete del;
+                }
+            }
+
+        }
+
+    }
+    TYPE front() {
         return root->getKey();
     }
-    TYPE back(){
+    TYPE back() {
         return leaf->getKey();
     }
     /***
@@ -165,14 +178,129 @@ public:
     NotAvaliable on STL
     ***/
     void print() {
-        print(root);
+        Node* ptr;
+        for(ptr=root; ptr!=NULL; ptr=ptr->getNext())
+            cout << ptr->getKey() << " ";
     }
-    TYPE* toArray(){
+    TYPE* toArray() {
         TYPE* arr = new TYPE[size()];
-        toArray(arr,0,root);
+        Node* ptr;
+        int i;
+        for(ptr = root,i=0; i<size(); ptr=ptr->getNext(),i++)
+            arr[i]=ptr->getKey();
         return arr;
     }
+    void sort() {
+        TYPE *arr=toArray();
+        TYPE tmp;
+
+        int i,size_l=size();
+        for(i=0; i<size_l; i++) {
+            for(int j=0; j<size_l-i; j++) {
+                if(arr[j]>arr[j+1]) {
+                    tmp=arr[j+1];
+                    arr[j+1]=arr[j];
+                    arr[j]=tmp;
+                }
+            }
+        }
+        clear();
+        for(i=0; i<size_l; i++) {
+            push_back(arr[i]);
+        }
+    }
+    bool find(TYPE key) {
+        Node* ptr;
+        for(ptr=root; ptr!=NULL; ptr=ptr->getNext()) {
+            if(ptr->getKey()==key)
+                return true;
+        }
+        return false;
+    }
+    void push_sort(TYPE b) {
+        if(root==NULL)
+            push_front(b);
+        else if(root->getKey()>=b)
+            push_front(b);
+        else if(leaf->getKey()<=b)
+            push_back(b);
+        else {
+            Node *newNode=new Node(b);
+            Node *trav=root;
+            while((trav!=NULL)&&trav->getKey()<b) {
+                trav=trav->getNext();
+            }
+
+            newNode->setNext(trav);
+            trav->getPrev()->setNext(newNode);
+            newNode->setPrev(trav->getPrev());
+            trav->setPrev(newNode);
+        }
+    }
     ~LinkedList() {};
+
+    /**********************
+    Reimplement for support Teacher quest
+    **********************/
+    void insertHead(TYPE info){
+        push_front(info);
+    }
+    void insertTail(TYPE info){
+        push_back(info);
+    }
+    void deleteHead(){
+        pop_front();
+    }
+    void deleteTail(){
+        pop_back();
+    }
+    void deleteInfo(TYPE info){
+        remove(info);
+    }
+    TYPE getFront(){
+        return front();
+    }
+    TYPE getBack(){
+        return  back();
+    }
+    int countInfo(TYPE info){
+        Node* ptr;
+        int ct = 0;
+        for(ptr=root; ptr!=NULL; ptr=ptr->getNext()) {
+            if(ptr->getKey()==info)
+                ct++;
+        }
+        return ct;
+    }
+    bool search(TYPE info){
+        return find(info);
+    }
+    void destroy(){
+        clear();
+    }
+    void insertSort(TYPE info[],int num){
+        int i;
+        for(i=0;i<num;i++){
+            push_sort(info[i]);
+        }
+    }
+    void decInfo(TYPE info){
+        Node* ptr;
+        for(ptr=root; ptr!=NULL; ptr=ptr->getNext()) {
+                ptr->setKey(ptr->getKey()-info);
+        }
+    }
+    void incInfo(TYPE info){
+        Node* ptr;
+        for(ptr=root; ptr!=NULL; ptr=ptr->getNext()) {
+                ptr->setKey(ptr->getKey()+info);
+        }
+    }
+    TYPE* getAllInfo(){
+        return toArray();
+    }
+
+
 protected:
 
 
@@ -180,14 +308,11 @@ protected:
 };
 int main() {
     LinkedList<int> l;
-    l.push_front(9);
-    l.push_front(5);
-    l.push_front(5);
-    l.push_back(8);
-    l.push_front(6);
-    l.push_front(7);
-    int* b = l.toArray();
-    for(int i=0;i<l.size();i++){
-        cout << b[i] << " ";
-    }
+    l.push_sort(7);
+    l.push_sort(8);
+    l.push_sort(0);
+    l.push_sort(1);
+    l.push_sort(2);
+    l.remove(2);
+    l.print();
 }
