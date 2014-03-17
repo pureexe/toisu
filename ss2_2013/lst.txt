@@ -1,0 +1,10 @@
+        void push_back(TYPE key,Node* root){
+            if(root->getNext()!=NULL){
+                return push_back(key,root->getNext());
+            }
+            else{
+                Node* u =new Node(key);
+                root->setNext(u);
+                u->setPrev(root);
+            }
+        }
