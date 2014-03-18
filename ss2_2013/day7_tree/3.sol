@@ -1,0 +1,18 @@
+Y
+Y
+Y
+Y
+Y A
+Y B
+Y C
+Y Z
+N
+N
+N
+N
+N
+N
+N
+N
+N
+A B C D E F Z
